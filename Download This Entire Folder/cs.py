@@ -21,7 +21,7 @@ reason = input("So what made you decide to run me today? ")
 print("That's cool. I'm a pretty simple program though. I'm not very interesting. My creator has other much more interesting programs like a recreation/modificaiton of the game 'Spacewar!' he made in Processing.")
 answer = input("In fact, let me show it to you. Is that OK? [Y/N] ")
 if answer == 'y' or answer == 'Y':
-	os.system("open ~/Desktop/'Homework #1'/.Spacewar/Spacewar.pde")
+	os.system("open /'.untitled folder'/Mystery/Mystery.pde")
 else:
 	answer2 = input("I promise it will be cool. :) [Y/N]")
 	if answer2 == 'Y' or answer2 =='y':
