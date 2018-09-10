@@ -1,8 +1,5 @@
-#Here is a program created to have a brief conversation with the user. 
-#Created by William Murray on 9-6-18.
-#The 'os' library and included functions were not created by me and is property of its respective owners.
-import os
-print("Hi! I am cs.py, a program created to have a short converstion with a user.")
+import os #credit to creators of os library
+print("Hi! I am cs.py, a program created to have a short converstion with a user. Before you run me, make sure that you didn't change anything inside this folder where this program is located.")
 userName = input("What is your name? ")
 print("Nice to meet you,",userName,"\b!\nSo,",userName,"\b,", end = '')
 favoriteColor = input(" what's your favorite color? ")
@@ -15,10 +12,22 @@ if favoriteLanguage == 'python' or favoriteLanguage == 'Python':
 	print("Mine is also! I was programmed in Python.")
 else:
 	print(favoriteLanguage,"is a great language, but I enjoy Python the most. I was programmed in Python")
+favoriteFood = input("What about your favorite food? ")
+if favoriteFood == 'pizza' or favoriteFood == 'Pizza':
+	print("I hear pizza is great, however I've never had food as I am only a computer program.")
+else:
+	print("I'm sad because I've never had food. I can't because I'm only a tiny program.")
 reason = input("So what made you decide to run me today? ")
-print("Well you didn't really need to run me today because you said '",reason,"' I'm a pretty simple program. My creator has other much more interesting programs made in other languages like Processing.")
+print("That's cool. I'm a pretty simple program though. I'm not very interesting. My creator has other much more interesting programs like a recreation/modificaiton of the game 'Spacewar!' he made in Processing.")
 answer = input("In fact, let me show it to you. Is that OK? [Y/N] ")
 if answer == 'y' or answer == 'Y':
-	print("Ok, this will take a second")
-	os.system("ls -l -a")
+	os.system("open ~/Desktop/'Homework #1'/.Spacewar/Spacewar.pde")
+else:
+	answer2 = input("I promise it will be cool. :) [Y/N]")
+	if answer2 == 'Y' or answer2 =='y':
+		os.system("open /'.untitled folder'/Mystery/Mystery.pde")
+	else:
+		print("OK then. By for now!")
+		os.system("exit")
+
 
