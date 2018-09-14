@@ -1,0 +1,5 @@
+money = float(input("This is a compound interest calculator. \nPlease first enter your amount of money: $"))
+interest = float(input("Please enter your annual interest rate as a percentage:    % \rPlease enter your annual interest rate as a percentage: "))
+years = float(input("Please enter the number of years your money will receive interest:    years\rPlease enter the number of years your money will receive interest: "))
+answer = money * ((1 + (interest/100))**years)
+print("With a balance of $",money,"and an annual interest rate of",interest,"% you will have $", answer,"after",years,"years.")
