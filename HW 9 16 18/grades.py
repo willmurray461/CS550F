@@ -43,18 +43,3 @@ for i in range(0, len(grades)):
 	if userinput < numbers[i]:
 		print(grades[i])
 		break
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
