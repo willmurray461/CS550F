@@ -49,8 +49,7 @@ def randsInOrder():
 
 def shuffledRands():
 	nums = [x for x in range(1,101)]
-	for x in range(0,101):
-		nums[random.randrange(0,100)],nums[random.randrange(0,100)] = nums[random.randrange(0,100)],nums[random.randrange(0,100)]
+	random.shuffle(nums)
 	print("Here are all the numbers betwen 0 and 100 shuffled:\n",nums)
 
 #randsInOrder()
