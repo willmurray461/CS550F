@@ -1,4 +1,6 @@
 import sys
+import random
+
 def fib(digits):
 	prevdigit = 0
 	currentdigit = 1
@@ -8,7 +10,6 @@ def fib(digits):
 		tempdigit = currentdigit
 		currentdigit = currentdigit + prevdigit
 		prevdigit = tempdigit
-
 
 def toDecimal(binarynum):
 	decimalnum = 0;
@@ -27,20 +28,36 @@ def toDecimal2(binarynum):
 	print(str(decimalnum))
 
 
-def Primes(num):
+def primes(num):
 	nums = [x for x in range(2,num)]
-	primes = []
 	composites = []
-	for i in range(0,len(nums)-1):
-		for j in range(0,len(nums)-1):
-			z = nums[i] % nums[j]
-			if z == 0 and not nums[i] == nums[j]:
+	for i in range(0,len(nums)):
+		for j in range(0,len(nums)):
+			if nums[i]%nums[j] == 0 and not nums[i] == nums[j] and nums[i] not in composites and nums[j] not in composites:
 				composites.append(nums[i])
-	primes = [x for x in nums if x not in composites]
-	print(primes)
+				break
+	nums = [x for x in nums if x not in composites]
+	print(nums)
 
 
-Primes(25)
+def randsInOrder():
+	nums = [random.randrange(1,101) for x in range(0,10)]
+	nums = [x for x in nums if not x%3 == 0]
+	nums.sort()
+	print(nums)
+
+
+def shuffledRands():
+	nums = [x for x in range(1,101)]
+	for x in range(0,101):
+		nums[random.randrange(0,100)],nums[random.randrange(0,100)] = nums[random.randrange(0,100)],nums[random.randrange(0,100)]
+	print(nums)
+
+#randsInOrder()
+
+#shuffledRands()
+
+primes(int(sys.argv[1]))
 
 
 #toDecimal(sys.argv[1])
