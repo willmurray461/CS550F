@@ -37,27 +37,29 @@ def primes(num):
 				composites.append(nums[i])
 				break
 	nums = [x for x in nums if x not in composites]
-	print(nums)
+	print("The prime numbers between 0 and",num,"are:\n",nums)
 
 
 def randsInOrder():
 	nums = [random.randrange(1,101) for x in range(0,10)]
 	nums = [x for x in nums if not x%3 == 0]
 	nums.sort()
-	print(nums)
+	print("Here are some random numbers between 0 and 100 which are not divisible by 3:\n",nums)
 
 
 def shuffledRands():
 	nums = [x for x in range(1,101)]
 	for x in range(0,101):
 		nums[random.randrange(0,100)],nums[random.randrange(0,100)] = nums[random.randrange(0,100)],nums[random.randrange(0,100)]
-	print(nums)
+	print("Here are all the numbers betwen 0 and 100 shuffled:\n",nums)
 
 #randsInOrder()
 
-#shuffledRands()
 
-primes(int(sys.argv[1]))
+shuffledRands()
+
+
+#primes(int(sys.argv[1]))
 
 
 #toDecimal(sys.argv[1])
