@@ -55,7 +55,7 @@ def shuffledRands():
 #randsInOrder()
 
 
-shuffledRands()
+#shuffledRands()
 
 
 #primes(int(sys.argv[1]))
