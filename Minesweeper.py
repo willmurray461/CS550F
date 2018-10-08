@@ -86,8 +86,8 @@ def Minesweeper(columns, rows, difficulty):
 		for x in range(0,rows+2):
 			print(*facade[x])
 		if outcome == 0:
-			xcoord = input("Enter the x coordinate of the tile you would like to sweep: ")
-			ycoord = input("Enter the y coordinate of the tile you would like to sweep: ")
+			xcoord = int(input("Enter the x coordinate of the tile you would like to sweep: "))
+			ycoord = int(input("Enter the y coordinate of the tile you would like to sweep: "))
 			revealed[ycoord][xcoord] = field[ycoord][xcoord]
 		if outcome == 1:
 			for x in range(1,rows+1):
