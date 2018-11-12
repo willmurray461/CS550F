@@ -1,7 +1,8 @@
+import random
+
 class Account:
-	def __init__(self,account_type,interest,password):
+	def __init__(self,account_type,username,password):
 		self.account_type = account_type
-		self.interest = interest
 		self.password = password
 		self.balance = 0
 		self.account_number = random.randrange(1000000000000000,10000000000000000)
@@ -14,8 +15,8 @@ class Account:
 		if amount <= 0.01:
 			return "You cannot deposit a sum less than $0.01"
 		else:
-			return "Added $"+str(amount)+" to account number "+str(self.account_number)+"."
 			self.balance = self.balance + amount
+			return "Added $"+str(amount)+" to account number "+str(self.account_number)+"."
 	def withdraw(self,amount):
 		amount = amount*100
 		amount = amount//1
@@ -26,19 +27,19 @@ class Account:
 			return "You cannot withdraw a sum less than $0.01"
 		else:
 			self.balance = self.balance - amount
-			return "$"+str(amount)+" was withdrawn form account number"+str(self.account_number)+"."
-	def log_in(self,password):
-		if password == self.password:
-			return "Account Number: "+str(self.account_number)+"\nAccount Type: "+str(self.account_type)+"\nBalance: $"+str(self.balance)+"\nInterest: "+str(self.interest)
+			return "$"+str(amount)+" was withdrawn form account number "+str(self.account_number)+"."
+	def log_in(self,username,password):
+		if password == self.password and username == self.username:
+			return "Account Number: "+str(self.account_number)+"\nAccount Type: "+str(self.account_type)+"\nBalance: $"+str(self.balance)
 		else:
-			return "Incorrect Password"
+			return "Incorrect Username or Password"
 
-Account1 = Account("Checking","1%","1234")
-print(Account1.log_in("1234"))
+Account1 = Account("Checking","Bob","1234")
+print(Account1.log_in("Bob","1234"))
 print(Account1.deposit(500000))
 print(Account1.deposit(-1))
 print(Account1.withdraw(27000))
 print(Account1.withdraw(-1))
-print(Account1.check_balance)
+print(Account1.check_balance())
 
 
