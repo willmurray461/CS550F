@@ -57,12 +57,7 @@ class deck:
 				self.cards[x-1].suit = "♦"
 			else:
 				self.cards[x-1].suit = "♣"
-		for x in range(1,50000):
-			rand1 = random.randrange(0,52)
-			rand2 = random.randrange(0,52)
-			tempvar = self.cards[rand1]
-			self.cards[rand1] = self.cards[rand2]
-			self.cards[rand2] = tempvar
+		random.shuffle(self.cards)
 	def transfer(self, card, new_owner):
 		self.cards[card-1].owner = new_owner
 
@@ -78,9 +73,13 @@ for x in range(27,40):
 for x in range(40,53):
 	deck1.cards[x-1].owner = 4
 
-def select_cards(num, string, winner, winnersuit, heartsbroken):
+def select_cards(num, string):
+	global winner
+	global winnersuit
+	global heartsbroken
 	selected = 0
 	done = False
+	xval = 1
 	while done == False:
 		sys.stdout.write("\u001b[12;0H\u001b[0J")
 		counter = 1
@@ -99,10 +98,9 @@ def select_cards(num, string, winner, winnersuit, heartsbroken):
 		print("Go")
 		sys.stdout.write("\u001b[0m\u001b[20;0H")
 		print(string)
-		sys.stdout.write("\u001b[12;0H")
+		sys.stdout.write("\u001b[12;"+str(xval)+"H")
 		print("↓")
 
-		xval = 1
 		while getch.getch() == "\033":
 			getch.getch()
 			char = getch.getch()
@@ -123,52 +121,58 @@ def select_cards(num, string, winner, winnersuit, heartsbroken):
 				sys.stdout.write("\u001b[12;"+str(xval)+"H\u001b[2K")
 				print("↓")
 
-		if xval > 4*(counter-1)-7 and selected == num:
-			done = True
-
 		for x in range(1,53):
-			if deck1.cards[x-1].owner == 1:
-				if deck1.cards[x-1].id == xval:
-					if num == 1:
-						if counter == 13 and winner == 1:
+			if deck1.cards[x-1].owner == 1 and deck1.cards[x-1].id == xval:
+				if num == 1:	
+					if winner == 1:
+						if counter == 14:
 							if not deck1.cards[x-1].suit == "♣" or not deck1.cards[x-1].rank == 2:
-								done = False
+								deck1.cards[x-1].picked = True
+								selected += 1
 								xval = 1
-								sys.stdout.write("\u001b[20;0H\u001b[2K")
-								print("You have the two of clubs. You must play the two of clubs on the first trick.")
-							else:
-								winnersuit = deck1.cards[x-1].suit
-						if winner == 1:
-							if deck1.cards[x-1].suit == "♥" and heartsbroken == False:
-								done = False
-								xval = 1
-								sys.stdout.write("\u001b[20;0H\u001b[2K")
-								print("The hearts have not been broken, so you cannot lead with a heart.")
-							else:
-								winnersuit = deck1.cards[x-1].suit
-						elif not deck1.cards[x-1].suit == winnersuit:
-							hassuit = False
-							for x in range(1,53):
-								if deck1.cards[x-1].suit == winnersuit:
-									hassuit = True
-							if hassuit == True:
-								done = False
-								xval = 1
-								sys.stdout.write("\u001b[20;0H\u001b[2K")
-								print("You must play a card of the same suit as the first one played in this trick.")
-					if deck1.cards[x-1].picked == True:
-						deck1.cards[x-1].picked = False
-						selected = 0
+								string = "You have the two of clubs. You must play the two of clubs on the first trick."
+						elif deck1.cards[x-1].suit == "♥" and heartsbroken == False:
+							deck1.cards[x-1].picked = True
+							selected += 1
+							xval = 1
+							string = "The hearts have not been broken, so you cannot lead with a heart."
+						else:
+							winnersuit = deck1.cards[x-1].suit
+					elif not deck1.cards[x-1].suit == winnersuit and not winner == 1:
+						hassuit = False
+						for y in range(1,53):
+							if deck1.cards[y-1].suit == winnersuit and deck1.cards[y-1].owner == 1:
+								hassuit = True
+						if hassuit == True:
+							deck1.cards[x-1].picked = True
+							selected += 1
+							xval = 1
+							string = "You must play a card of the same suit as the first one played in this trick."
+						elif deck1.cards[x-1].suit == "♠" and deck1.cards[x-1].rank == "Q":
+							heartsbroken = True
+						elif deck1.cards[x-1].suit == "♥":
+							heartsbroken = True
+				if deck1.cards[x-1].picked == True:
+					deck1.cards[x-1].picked = False
+					selected = 0
+					if num == 1:
+						for y in range(7,13):
+							sys.stdout.write("\u001b["+str(y)+";10H")
+							print("       ")
+					else:
 						for y in range(7,13):
 							sys.stdout.write("\u001b["+str(y)+";0H\u001b[2K")
-						for y in range(1,53):
-							if deck1.cards[y-1].picked == True and selected <= num-1 and deck1.cards[y-1].owner == 1:
-								deck1.cards[y-1].draw(10+4*selected,7)
-								selected += 1
-					elif selected <= num-1:
-						deck1.cards[x-1].picked = True
-						deck1.cards[x-1].draw(10+4*selected,7)
-						selected += 1
+					for y in range(1,53):
+						if deck1.cards[y-1].picked == True and deck1.cards[y-1].owner == 1:
+							deck1.cards[y-1].draw(10+4*selected,7)
+							selected += 1
+				elif selected <= num-1:
+					deck1.cards[x-1].picked = True
+					deck1.cards[x-1].draw(10+4*selected,7)
+					selected += 1
+				sys.stdout.write("\u001b[1;1H")
+		if xval > 4*(counter-1)-3 and selected == num:
+			done = True
 
 def ai_trade_cards(owner):
 	selected = 0
@@ -247,8 +251,17 @@ def ai_trade_cards(owner):
 						deck1.cards[y-1].picked = True
 						selected += 1
 
-def ai_select_cards(owner, winner, winnersuit, heartsbroken):
+def ai_select_cards(owner):
+	global winner
+	global winnersuit
+	global heartsbroken
 	cardpicked = False
+	for x in range(1,53):
+		if deck1.cards[x-1].owner == owner:
+			if deck1.cards[x-1].suit == "♣" and deck1.cards[x-1].rank == 2:
+				deck1.cards[x-1].picked = True
+				winnersuit = deck1.cards[x-1].suit
+				cardpicked = True
 	if owner == winner:
 		for x in range(1,53):
 			if deck1.cards[x-1].owner == owner and heartsbroken == False:
@@ -308,28 +321,28 @@ def ai_select_cards(owner, winner, winnersuit, heartsbroken):
 							winnersuit = deck1.cards[y-1].suit
 							cardpicked = True
 		for x in range(1,53):
-			if deck1.cards[x-1].owner == owner and heartsbroken == False:
+			if deck1.cards[x-1].owner == owner and heartsbroken == True:
 				if deck1.cards[x-1].rank == "J":
 					if cardpicked == False:
 						deck1.cards[x-1].picked = True
 						winnersuit = deck1.cards[x-1].suit
 						cardpicked = True
 		for x in range(1,53):
-			if deck1.cards[x-1].owner == owner and heartsbroken == False:
+			if deck1.cards[x-1].owner == owner and heartsbroken == True:
 				if deck1.cards[x-1].rank == "Q":
 					if cardpicked == False:
 						deck1.cards[x-1].picked = True
 						winnersuit = deck1.cards[x-1].suit
 						cardpicked = True
 		for x in range(1,53):
-			if deck1.cards[x-1].owner == owner and heartsbroken == False:
+			if deck1.cards[x-1].owner == owner and heartsbroken == True:
 				if deck1.cards[x-1].rank == "K":
 					if cardpicked == False:
 						deck1.cards[x-1].picked = True
 						winnersuit = deck1.cards[x-1].suit
 						cardpicked = True
 		for x in range(1,53):
-			if deck1.cards[x-1].owner == owner and heartsbroken == False:
+			if deck1.cards[x-1].owner == owner and heartsbroken == True:
 				if deck1.cards[x-1].rank == "A":
 					if cardpicked == False:
 						deck1.cards[x-1].picked = True
@@ -372,6 +385,13 @@ def ai_select_cards(owner, winner, winnersuit, heartsbroken):
 							deck1.cards[x-1].picked = True
 							heartsbroken = True
 							cardpicked = True
+			for x in range(1,53):
+				if deck1.cards[x-1].owner == owner:
+					if deck1.cards[x-1].suit == "♥" and deck1.cards[x-1].rank == "J":
+						if cardpicked == False:
+							deck1.cards[x-1].picked = True
+							heartsbroken = True
+							cardpicked = True
 			for x in range(1,10):
 				for y in range(1,53):
 					if deck1.cards[y-1].owner == owner:
@@ -380,13 +400,6 @@ def ai_select_cards(owner, winner, winnersuit, heartsbroken):
 								deck1.cards[y-1].picked = True
 								heartsbroken = True
 								cardpicked = True
-			for x in range(1,53):
-				if deck1.cards[x-1].owner == owner:
-					if deck1.cards[x-1].suit == "♥":
-						if cardpicked == False:
-							deck1.cards[x-1].picked = True
-							heartsbroken = True
-							cardpicked = True
 			for x in range(1,53):
 				if deck1.cards[x-1].owner == owner:
 					if deck1.cards[x-1].rank == "A":
@@ -422,14 +435,14 @@ def ai_select_cards(owner, winner, winnersuit, heartsbroken):
 			for x in range(1,53):
 				if deck1.cards[x-1].suit == winnersuit:
 					if deck1.cards[x-1].owner == owner and heartsbroken == False:
-						if deck1.cards[x-1].rank == "A":
+						if deck1.cards[x-1].rank == "A" and not deck1.cards[x-1].suit == "♠":
 							if cardpicked == False:
 								deck1.cards[x-1].picked = True
 								cardpicked = True
 			for x in range(1,53):
 				if deck1.cards[x-1].suit == winnersuit:
 					if deck1.cards[x-1].owner == owner and heartsbroken == False:
-						if deck1.cards[x-1].rank == "K":
+						if deck1.cards[x-1].rank == "K" and not deck1.cards[x-1].suit == "♠":
 							if cardpicked == False:
 								deck1.cards[x-1].picked = True
 								winnersuit = deck1.cards[x-1].suit
@@ -452,7 +465,7 @@ def ai_select_cards(owner, winner, winnersuit, heartsbroken):
 								cardpicked = True
 			for x in range(1,10):
 				for y in range(1,53):
-					if deck1.cards[x-1].suit == winnersuit:
+					if deck1.cards[y-1].suit == winnersuit:
 						if deck1.cards[y-1].owner == owner and heartsbroken == False:
 							if deck1.cards[y-1].rank == 11-x:
 								if cardpicked == False:
@@ -460,7 +473,7 @@ def ai_select_cards(owner, winner, winnersuit, heartsbroken):
 									cardpicked = True
 			for x in range(2,10):
 				for y in range(1,53):
-					if deck1.cards[x-1].suit == winnersuit:
+					if deck1.cards[y-1].suit == winnersuit:
 						if deck1.cards[y-1].owner == owner and heartsbroken == True:
 							if deck1.cards[y-1].rank == x:
 								if cardpicked == False:
@@ -511,8 +524,10 @@ def ai_select_cards(owner, winner, winnersuit, heartsbroken):
 			if deck1.cards[x-1].owner == 4 and deck1.cards[x-1].picked == True:
 				deck1.cards[x-1].draw(17,4)
 
-
-def determine_winner(winner, winnersuit, heartsbroken):
+def determine_winner():
+	global winner
+	global winnersuit
+	global heartsbroken
 	winnerdetermined = False
 	for x in range(1,53):
 		if deck1.cards[x-1].suit == winnersuit and deck1.cards[x-1].picked == True:
@@ -542,21 +557,23 @@ def determine_winner(winner, winnersuit, heartsbroken):
 					winnerdetermined = True
 	for x in range(1,53):
 		if deck1.cards[x-1].picked == True:
+			deck1.cards[x-1].picked = False
 			deck1.transfer(x,5)
+
 
 winner = 0
 winnersuit = "♣"
 heartsbroken = False
-select_cards(3,"Please choose three cards to trade.", winner, winnersuit, heartsbroken)
+select_cards(3,"Please choose three cards to trade.")
 ai_trade_cards(2)
 ai_trade_cards(3)
 ai_trade_cards(4)
 
-selected = 0
+traded = 0
 for x in range(1,53):
 	if deck1.cards[x-1].owner == 4 and deck1.cards[x-1].picked == True: 
-		deck1.cards[x-1].draw(10+4*selected,1)
-		selected += 1 
+		deck1.cards[x-1].draw(10+4*traded,1)
+		traded += 1 
 
 sys.stdout.write("\u001b[3;25H")
 print("Recieved")
@@ -575,62 +592,34 @@ for x in range(1,53):
 	if deck1.cards[x-1].rank == 2 and deck1.cards[x-1].suit == "♣":	
 		winner = deck1.cards[x-1].owner
 
-if winner == 1:
-	select_cards(1,"Please choose a card to play.", winner, winnersuit, heartsbroken)
-	ai_select_cards(2, winner, winnersuit, heartsbroken)
-	ai_select_cards(3, winner, winnersuit, heartsbroken)
-	ai_select_cards(4, winner, winnersuit, heartsbroken)
-
-elif winner == 2:
-	ai_select_cards(2, winner, winnersuit, heartsbroken)
-	ai_select_cards(3, winner, winnersuit, heartsbroken)
-	ai_select_cards(4, winner, winnersuit, heartsbroken)
-	select_cards(1,"Please choose a card to play.", winner, winnersuit, heartsbroken)
-
-elif winner == 3:
-	ai_select_cards(3, winner, winnersuit, heartsbroken)
-	ai_select_cards(4, winner, winnersuit, heartsbroken)
-	select_cards(1,"Please choose a card to play.", winner, winnersuit, heartsbroken)
-	ai_select_cards(2, winner, winnersuit, heartsbroken)
-	
-elif winner == 4:
-	ai_select_cards(4, winner, winnersuit, heartsbroken)
-	select_cards(1,"Please choose a card to play.", winner, winnersuit, heartsbroken)
-	ai_select_cards(2, winner, winnersuit, heartsbroken)
-	ai_select_cards(3, winner, winnersuit, heartsbroken)
-# determine_winner(winner, winnersuit, heartsbroken)
-
-
 ended = False
 while ended == False:
 	if winner == 1:
-		select_cards(1,"Please choose a card to play.", winner, winnersuit, heartsbroken)
-		ai_select_cards(2, winner, winnersuit, heartsbroken)
-		ai_select_cards(3, winner, winnersuit, heartsbroken)
-		ai_select_cards(4, winner, winnersuit, heartsbroken)
+		select_cards(1,"Please choose a card to play.")
+		ai_select_cards(2)
+		ai_select_cards(3)
+		ai_select_cards(4)
 	elif winner == 2:
-		ai_select_cards(2, winner, winnersuit, heartsbroken)
-		ai_select_cards(3, winner, winnersuit, heartsbroken)
-		ai_select_cards(4, winner, winnersuit, heartsbroken)
-		select_cards(1,"Please choose a card to play.", winner, winnersuit, heartsbroken)
+		ai_select_cards(2)
+		ai_select_cards(3)
+		ai_select_cards(4)
+		select_cards(1,"Please choose a card to play.")
 	elif winner == 3:
-		ai_select_cards(3, winner, winnersuit, heartsbroken)
-		ai_select_cards(4, winner, winnersuit, heartsbroken)
-		select_cards(1,"Please choose a card to play.", winner, winnersuit, heartsbroken)
-		ai_select_cards(2, winner, winnersuit, heartsbroken)
+		ai_select_cards(3)
+		ai_select_cards(4)
+		select_cards(1,"Please choose a card to play.")
+		ai_select_cards(2)
 	elif winner == 4:
-		ai_select_cards(4, winner, winnersuit, heartsbroken)
-		select_cards(1,"Please choose a card to play.", winner, winnersuit, heartsbroken)
-		ai_select_cards(2, winner, winnersuit, heartsbroken)
-		ai_select_cards(3, winner, winnersuit, heartsbroken)
-	# determine_winner(winner, winnersuit, heartsbroken)
+		ai_select_cards(4)
+		select_cards(1,"Please choose a card to play.")
+		ai_select_cards(2)
+		ai_select_cards(3)
+	determine_winner()
+	sys.stdout.write("\u001b[0;0H")
+	print(str(winner))
+	time.sleep(2)
+	sys.stdout.write("\u001b[11;80H\u001b[1J")
 	
-
-
-'''
-
-'''
-
 
 
 
