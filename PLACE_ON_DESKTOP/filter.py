@@ -18,6 +18,8 @@ except FileNotFoundError:
 image2 = Image.open(var)
 
 # Loads asset from folder
+# For some reason it won't work if I write '~/Desktop/PLACE_ON_DESKTOP/cage.jpg',
+# so the the code might need to be edited if used on another computer.
 try:
 	image2 = Image.open("/Users/williammurray/Desktop/PLACE_ON_DESKTOP/cage.jpg")
 
