@@ -15,17 +15,15 @@ except FileNotFoundError:
 	print("Could not find an image at:\n\""+sys.argv[1]+"\"\nMake sure you entered the location of your image correctly.")
 	sys.exit()
 
-image2 = Image.open(var)
-
 # Loads asset from folder
-# For some reason it won't work if I write '~/Desktop/PLACE_ON_DESKTOP/cage.jpg',
+# For some reason it won't work if I write '~/Desktop/placeondesktop/cage.jpg',
 # so the the code might need to be edited if used on another computer.
 try:
-	image2 = Image.open("/Users/williammurray/Desktop/PLACE_ON_DESKTOP/cage.jpg")
+	image2 = Image.open("/Users/williammurray/Desktop/CS550F/placeondesktop/cage.jpg")
 
 # If the program cannot load the asset, it will tell the user and quit
 except FileNotFoundError:
-	print("Asset missing/failed to load. Make sure you downloaded the entire folder:\n'PLACE_ON_DESKTOP'\nand placed it on your desktop.")
+	print("Asset missing/failed to load. Make sure you downloaded the entire folder:\n'placeondesktop'\nand placed it on your desktop.")
 	sys.exit()
 
 # Sets two variables for the height and width of the image
