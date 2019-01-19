@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 
 # r = [x for x in range(11)]
 
-# #plt.plot(r,display,'gs')
+# plt.plot(r,display,'gs')
 # plt.bar(r,display,color=(0.5,1.0,0.5,0.5))
 # plt.ylabel("Number of Trials")
 # plt.xlabel("Number of Heads")
@@ -35,53 +35,66 @@ import matplotlib.pyplot as plt
 #time you'll hit the board within 100 tries.
 
 
-def walk(num):
-	x = 0
-	y = 0
-	for i in range(0,num):
-		r = random.randrange(0,4)
-		if r == 0:
-			x += 1
-		elif r == 1:
-			x -= 1
-		elif r == 2:
-			y += 1
-		else:
-			y -= 1
-	dist = abs(x)+abs(y)
-	return dist
+# def walk(num):
+# 	x = 0
+# 	y = 0
+# 	for i in range(0,num):
+# 		r = random.randrange(0,4)
+# 		if r == 0:
+# 			x += 1
+# 		elif r == 1:
+# 			x -= 1
+# 		elif r == 2:
+# 			y += 1
+# 		else:
+# 			y -= 1
+# 	dist = abs(x)+abs(y)
+# 	return dist
 
 
-def throw(num):
-	hits = 0
-	misses = 0
-	for i in range(0,num):
-		x = random.randrange(0,2)
-		y = random.randrange(0,2)
-		if math.sqrt(x**2+y**2) <= 1:
-			if misses >= 100:
-				misses = 0
-			else:
-				hits += 1
-		else:	
-			misses += 1
-	return hits		
+# def throw(num):
+# 	hits = 0
+# 	misses = 0
+# 	for i in range(0,num):
+# 		x = random.randrange(0,2)
+# 		y = random.randrange(0,2)
+# 		if math.sqrt(x**2+y**2) <= 1:
+# 			if misses >= 100:
+# 				misses = 0
+# 			else:
+# 				hits += 1
+# 		else:	
+# 			misses += 1
+# 	return hits		
 
 
-walkhome = 0
-for x in range(1,31):
-	for y in range(0,20000):
-		if walk(x) <= 4:
-			walkhome += 1
-	print(str(x)+" -- "+str(walkhome/200)+"%")
-	walkhome = 0
+# walkhome = 0
+# for x in range(1,31):
+# 	for y in range(0,20000):
+# 		if walk(x) <= 4:
+# 			walkhome += 1
+# 	print(str(x)+" -- "+str(walkhome/200)+"%")
+# 	walkhome = 0
 
 
-nums = 1000
-for x in range(0,3):
-	print(str(nums)+"--"+str(throw(nums)*4/nums))
-	nums *= 10
+# nums = 1000
+# for x in range(0,3):
+# 	print(str(nums)+"--"+str(throw(nums)*4/nums))
+# 	nums *= 10
 
+calories = 0
+
+
+def party():
+	global calories
+	for x in range(0,random.randrange(1,31)):
+		calories += random.randrange(50,501)
+
+for x in range(0,10000):
+	for y in range(0,random.randrange(1,9)):
+		party()
+
+print(calories/10000)
 
 
 	
