@@ -19,7 +19,7 @@ r = [x for x in range(1,121)]
 #loops 20000 times:
 for x in range(0,20000):
 	#sets hours of sleep
-	sleephrs = 8.25
+	sleephrs = 9.5
 	#sets hours of studying according to sleeping
 	studyhrs = 11 - sleephrs
 	#student "learns"
@@ -46,10 +46,10 @@ grades.sort()
 #creates an array used to lot the y axis for graphing 
 display = [0 for i in range(0,120)]
 #transfers the grades to the graph
-for i in range(0,2000):
+for i in range(0,20000):
 	display[grades[i]] += 1
 #displays the graph
-plt.plot(r,display)
+plt.bar(r,display)
 plt.ylabel("Frequency of grade")
 plt.xlabel("Grade")
 plt.show()
