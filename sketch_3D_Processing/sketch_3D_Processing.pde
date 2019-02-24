@@ -1,4 +1,5 @@
-boolean w,a,s,d;
+boolean w, a, s, d, game_over;
+int counter, reload;
 void keyPressed()
 {
   if(key == 'w')
@@ -19,10 +20,13 @@ void keyPressed()
   }
   if(key == ' ')
   {
-    
-    projectile projectile1 = new projectile();
-    projectile1.init(player1.x, player1.y, player1.z, player1.r);
-    projectiles.add(projectile1);
+    if(reload <= 0)
+    {
+      projectile projectile1 = new projectile();
+      projectile1.init(player1.x + 40*cos(player1.r), player1.y, player1.z + 40*sin(player1.r), player1.r);
+      projectiles.add(projectile1);
+      reload = 15;
+    }
   }
 }
 
@@ -47,22 +51,23 @@ void keyReleased()
 }
 class projectile
 {
-  float x, y, z, xspeed, yspeed, zspeed;
-  void init(float xpos, float ypos, float zpos, float r)
+  float x, y, z, xspeed, yspeed, zspeed, r;
+  void init(float xpos, float ypos, float zpos, float angle)
   {
+    r = angle;
     x = xpos;
-    y = ypos;
+    y = ypos + 10;
     z = zpos;
-    xspeed = 4*cos(r);
-    zspeed = 4*sin(r);
+    xspeed = 7*cos(r);
+    zspeed = 7*sin(r);
   }
   void update()
   {
    x += xspeed;
    z += zspeed;
-   translate(x, y, z);
-   box(5);
-   translate(-x, -y, -z);
+   strokeWeight(8);
+   line(x, y, z, x + 100*cos(r), y, z + 100*sin(r));
+   strokeWeight(1);
   }
   void collision(ArrayList<enemy> enemies)
   {
@@ -104,7 +109,6 @@ class enemy
  }
 }
 
-
 class pyramid
 {
   float x, y, z, size = 0;
@@ -140,7 +144,17 @@ class pyramid
     endShape();
     
     translate(-x, -y, -z);
-  } 
+  }
+  void collision(ArrayList<projectile> projectiles)
+  {
+    for(int i  = 0; i < projectiles.size(); i++)
+    {
+      if(dist(x, z, projectiles.get(i).x, projectiles.get(i).z) < 40)
+      {
+        projectiles.remove(i);
+      }
+    }
+  }
 }
 class box
 {
@@ -159,6 +173,16 @@ class box
     noFill();
     box(size);
     translate(-x, -y, -z);
+  }
+  void collision(ArrayList<projectile> projectiles)
+  {
+    for(int i  = 0; i < projectiles.size(); i++)
+    {
+      if(dist(x, z, projectiles.get(i).x, projectiles.get(i).z) < 40)
+      {
+        projectiles.remove(i);
+      }
+    }
   }
 }
 class player
@@ -248,9 +272,10 @@ void setup()
   {
     boxes.add(new box());
   }
-  for(int i = 0; i < enemies.size(); i++)
+  for(int i = 0; i < enemies.size(); i+=2)
   {
-    enemies.get(i).init(random(-2048,2048), 384, random(-2048, 2048));
+    enemies.get(i).init(random(-2048,-512), 384, random(-2048, -512));
+    enemies.get(i+1).init(random(512,2048), 384, random(512, 2048));
   }
   for(int i = 0; i < 50; i++)
   {
@@ -258,11 +283,11 @@ void setup()
   }
   for(int i = 0; i < boxes.size(); i++)
   {
-    boxes.get(i).init(random(-2048,2048), 384, random(-2048, 2048), 80);
+    boxes.get(i).init(20*random(-128, 128), 384, 20*random(-128, 128), 80);
   }
   for(int i = 0; i < pyramids.size(); i++)
   {
-    pyramids.get(i).init(random(-2048,2048), 384, random(-2048, 2048), 40);
+    pyramids.get(i).init(20*random(-128, 128), 384, 20*random(-128, 128), 40);
   }
   size(1024, 768, P3D);
   background(0);
@@ -270,6 +295,17 @@ void setup()
 }
 void draw()
 {
+  if(counter == 0)
+  {
+    enemies.add(new enemy());
+    enemies.get(enemies.size() - 1).init(random(-2048,2048), 384, random(-2048, 2048));
+    if(dist(enemies.get(enemies.size() - 1).x, enemies.get(enemies.size() - 1).z, player1.x, player1.z) < 40)
+    {
+      enemies.remove(enemies.size() - 1);
+    }
+    counter = enemies.size()*30;
+  }
+  counter--;
   background(0);
   for(int i = 0; i < projectiles.size(); i++)
   {
@@ -278,10 +314,12 @@ void draw()
   for(int i = 0; i < boxes.size(); i++)
   {
     boxes.get(i).update();
+    boxes.get(i).collision(projectiles);
   }
   for(int i = 0; i < pyramids.size(); i++)
   {
     pyramids.get(i).update();
+    pyramids.get(i).collision(projectiles);
   }
   for(int i = 0; i < projectiles.size(); i++)
   {
@@ -294,7 +332,19 @@ void draw()
   for(int i = 0; i < enemies.size(); i++)
   {
     enemies.get(i).update(player1);
+    if(dist(enemies.get(i).x, enemies.get(i).z, player1.x, player1.z) < 40)
+    {
+      game_over = true;
+    }
   }
   player1.collision(boxes, pyramids);
   player1.update();
+  if(game_over == true)
+  {
+    player1.init(512, 384, 100, 3*PI/2);
+    textSize(12);
+    fill(0, 255, 0);
+    text("YOU DIED", 480, 384, 0);
+  }
+  reload--;
 }
